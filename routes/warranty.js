@@ -7,8 +7,11 @@ const Warranty = require("../models/Warranty");
 
 router.post("/register", async (req, res) => {
   try {
+    console.log(req.body);
     const { ref, sn, date, vendor } = req.body;
     const dateOfSale = new Date(date);
+    const dateOfWarranty = new Date(dateOfSale);
+    dateOfWarranty.setFullYear(dateOfWarranty.getFullYear() + 2);
 
     const warranty = await Warranty.findOne({
       reference: ref,
@@ -23,6 +26,7 @@ router.post("/register", async (req, res) => {
         reference: ref,
         serialNumber: sn,
         dateOfSale: dateOfSale,
+        dateOfWarranty: dateOfWarranty,
         vendor: vendor,
       });
 
@@ -39,7 +43,8 @@ router.post("/register", async (req, res) => {
 
 router.get("/warranty-check", async (req, res) => {
   try {
-    const { ref, sn } = req.body;
+    console.log(req.query);
+    const { ref, sn } = req.query;
 
     const warranty = await Warranty.findOne({
       reference: ref,

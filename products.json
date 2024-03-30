@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "product_name": "Brown glasses",
+    "reference_number": 1234567891
+  },
+  {
+    "id": 2,
+    "product_name": "Black and gold glasses",
+    "reference_number": 1234567892
+  },
+  {
+    "id": 3,
+    "product_name": "Red sunglasses",
+    "reference_number": 1234567893
+  },
+  {
+    "id": 4,
+    "product_name": "Black glasses",
+    "reference_number": 1234567894
+  },
+  {
+    "id": 5,
+    "product_name": "Blue glasses",
+    "reference_number": 1234567895
+  },
+  {
+    "id": 6,
+    "product_name": "Green glasses",
+    "reference_number": 1234567896
+  },
+  {
+    "id": 7,
+    "product_name": "Yellow glasses",
+    "reference_number": 1234567897
+  }
+]

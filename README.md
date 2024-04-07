@@ -1,5 +1,5 @@
-# Warranty registration app - Backend
+# Personal Projects - Backend
 
 ---
 
-TBD
+This repo regroups the backend servers for my personal projects.

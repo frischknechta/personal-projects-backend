@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Warranty = mongoose.model("Warranty", {
+const WarrantySchema = mongoose.Schema({
   reference: { type: String, minlength: 10, maxlength: 14 },
   serialNumber: { type: Number, min: 10000, max: 999999 },
   dateOfSale: Date,
@@ -8,4 +8,4 @@ const Warranty = mongoose.model("Warranty", {
   vendor: String,
 });
 
-module.exports = Warranty;
+module.exports = WarrantySchema;

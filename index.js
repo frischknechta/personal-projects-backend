@@ -4,14 +4,20 @@ const mongoose = require("mongoose");
 
 require("dotenv").config();
 
+const connEshop = mongoose.createConnection(
+  `${process.env.MONGODB_URI}/eshop-app`
+);
+module.exports = connEshop;
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(process.env.MONGODB_URI);
-
 const warrantyRoutes = require("./routes/warranty");
 app.use(warrantyRoutes);
+
+const productsRoutes = require("./routes/products");
+app.use(productsRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello" });

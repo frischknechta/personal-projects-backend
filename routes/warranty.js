@@ -1,7 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
-const Warranty = require("../models/Warranty");
+const WarrantySchema = require("../schemas/Warranty");
+
+const connWarranty = mongoose.createConnection(
+  `${process.env.MONGODB_URI}/warranty-app`
+);
+
+const Warranty = connWarranty.model("Warranty", WarrantySchema);
 
 // ROUTE CREATE
 

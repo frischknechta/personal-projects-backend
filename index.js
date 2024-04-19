@@ -19,6 +19,9 @@ app.use(warrantyRoutes);
 const productsRoutes = require("./routes/products");
 app.use(productsRoutes);
 
+const userRoutes = require("./routes/user");
+app.use(userRoutes);
+
 app.get("/", (req, res) => {
   res.json({ message: "Hello" });
 });

@@ -1,18 +1,25 @@
 const express = require("express");
 const router = express.Router();
+const fileUpload = require("express-fileupload");
+const cloudinary = require("cloudinary").v2;
 
 const ProductSchema = require("../schemas/Products");
 const connEshop = require("../index");
+const convertToBase64 = require("../utils/convertToBase64");
 
 const Product = connEshop.model("Product", ProductSchema);
 
-router.post("/add-product", async (req, res) => {
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// CREATE
+router.post("/add-product", fileUpload(), async (req, res) => {
   try {
     const { name, description, price, quantity } = req.body;
-
     const product = await Product.find({ name: name });
-
-    console.log(product);
 
     if (!product.length) {
       const newProduct = new Product({
@@ -21,6 +28,30 @@ router.post("/add-product", async (req, res) => {
         price: price,
         quantity: quantity,
       });
+
+      if (req.files !== null) {
+        const picturesToUpload = req.files.pictures;
+
+        if (Array.isArray(picturesToUpload) === false) {
+          console.log("1 image");
+          const result = await cloudinary.uploader.upload(
+            convertToBase64(picturesToUpload),
+            { folder: `eShop/${newProduct._id}` }
+          );
+          newProduct.pictures.push(result);
+        } else {
+          console.log("Plusieurs images");
+
+          const arrayOfPromises = picturesToUpload.map((picture) => {
+            return cloudinary.uploader.upload(convertToBase64(picture), {
+              folder: `eShop/${newProduct._id}`,
+            });
+          });
+
+          const result = await Promise.all(arrayOfPromises);
+          newProduct.pictures = result;
+        }
+      }
 
       await newProduct.save();
 
@@ -35,6 +66,7 @@ router.post("/add-product", async (req, res) => {
   }
 });
 
+// READ
 router.get("/products", async (req, res) => {
   try {
     const products = await Product.find();
@@ -45,6 +77,7 @@ router.get("/products", async (req, res) => {
   }
 });
 
+// UPDATE
 router.patch("/update-product", async (req, res) => {
   console.log(req.body);
 
@@ -59,7 +92,7 @@ router.patch("/update-product", async (req, res) => {
         product.price = req.body.price;
       }
 
-      if (req.body.quantity) {
+      if (req.body.quantity && req.doby.quantity >= 0) {
         product.quantity = req.body.quantity;
       }
 
@@ -74,6 +107,7 @@ router.patch("/update-product", async (req, res) => {
   }
 });
 
+// DELETE
 router.delete("/delete-product", async (req, res) => {
   try {
     if (!req.body.id) {

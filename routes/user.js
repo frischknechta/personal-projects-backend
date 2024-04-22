@@ -44,7 +44,41 @@ router.post("/user/signup", async (req, res) => {
 
         await newUser.save();
 
-        res.json({ message: `User ${username} has been created!` });
+        res.json({
+          message: `User ${username} has been created!`,
+          _id: newUser._id,
+          token: newUser.token,
+          username: newUser.username,
+        });
+      }
+    } else {
+      throw { message: "Missing parameters", status: 400 };
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// LOGIN
+router.post("/user/login", async (req, res) => {
+  try {
+    if (req.body.email && req.body.password) {
+      const user = await User.findOne({ email: req.body.email });
+
+      if (user) {
+        const hash = SHA256(req.body.password + user.salt).toString(encBase64);
+
+        if (hash === user.hash) {
+          res.json({
+            _id: user._id,
+            token: user.token,
+            username: user.username,
+          });
+        } else {
+          throw { message: "Email or password are incorrect", status: 400 };
+        }
+      } else {
+        throw { message: "Email or password are incorrect", status: 400 };
       }
     } else {
       throw { message: "Missing parameters", status: 400 };
